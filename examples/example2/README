@@ -1,0 +1,20 @@
+Example 2
+---------
+
+Describes the _replace()/_rep_flush() function pair of the ahocorasick library
+
+
+COMPILE
+-------
+
+First you must compile ahocorasick library.
+Then:
+
+$ cd example2
+$ make 
+
+
+RUN
+---
+
+$ build/example2

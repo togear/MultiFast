@@ -1,0 +1,146 @@
+multifast 2.0.0
+---------------
+
+A fast multiple string search & replace tool
+
+
+COMPILE
+-------
+
+First you must compile ahocorasick library.
+Then:
+
+$ cd multifast
+$ make 
+
+
+RUN
+---
+
+Examples:
+
+$ build/multifast -P test/cities.pat test/input1.txt
+$ build/multifast -P test/cities.pat test/input1.txt test/input2.txt
+$ build/multifast -P test/cities.pat test/input*
+$ build/multifast -P test/cities.pat test
+
+$ build/multifast -P test/cities.pat -xrp test/input*
+$ build/multifast -P test/cities.pat -ndrp test/input*
+
+$ build/multifast -P test/cities_r.pat -R outdir test/input*
+
+$ find /var/www/ -type f -print0 | xargs -0 build/multifast -P test/cities.pat -xrp
+$ cat test/input1.txt | ./build/multifast -P test/cities.pat -dp -
+
+
+MANUAL
+------
+
+Usage :
+multifast -P pattern_file [-R out_dir [-l] | -n[d|x]rpvfi] [-h] file1 [file2 ...]
+
+-P  specifies pattern file
+-R  specifies output directory for replace result
+-l  performs replacement in lazy mode
+-n  shows match number in the output
+-d  shows start position in decimal
+-x  shows start position in hex
+-r  shows representative string for the pattern
+-p  shows pattern
+-f  find first only
+-i  search case insensitive
+-v  show verbose output
+-h  print help
+
+Input file
+----------
+
+Input file(s) could be a single file name, multiple file names, standard 
+input (-), or single directory name. in last case only regular file of the 
+directory will be searched. Directory is not accepter for replace mode.
+
+Using find and xargs utilities you can generate multiple file names 
+for multifast:
+
+$ find /var/www/ -type f -print0 | xargs -0 multifast -P test/cities.pat -nxrpf
+
+It is better to use find and xargs commands to produce multiple files 
+instead of using directory name. The followings has same effect, But the 
+second one is faster:
+
+$ multifast -P test/cities.pat -ndrpf /var/www/
+$ find /var/www/ -type f -print0 | xargs -0 multifast -P test/cities.pat -ndrpf
+
+You cat feed multifast from standard input; to do so you need to write a 
+single dash (-) instead of file name:
+
+$ cat test/input1.txt | ./build/multifast -P test/cities.pat -dp -
+
+In replace mode you need to determine an output directory. The replacement 
+result will be saved in the given directory in the same hierarchy as the 
+input files.
+
+$ build/multifast -P test/cities_r.pat -R outdir test/input*
+$ build/multifast -P test/cities_r.pat -R outdir test/input1.txt www/file1.txt
+
+In the last command above two directories are created in the outdir directory.
+
+Pattern file
+------------
+
+Patter file includes patterns. The structure of pattern file
+is simple. Every pattern is defined in a 4-part expression:
+
+AX (ID) {PATTERN} {REPLACEMENT}
+
+1. The first part (we call it AX) can take only 2 values: 'a' or 'x'. The 'a'
+stands for ASCII and 'x' stands for hexadecimal. This part is mandatory. The 
+interpretation of the 3rd and 4th parts, depends on the value of AX.
+
+2. The second part (ID) defines a meaningful identifier for the pattern.
+For hex patterns or large string patterns it helps to improve the 
+intelligibility of output. This part is optional. For patterns without 
+identifier the program will assign an automatic identifier. The
+second part is enclosed by parenthesis and only can take 0-9, a-zA-Z and _
+(no space allowed).
+
+3. The third part is the main part which defines the string of character or 
+bytes. The definition of the string could be done in two ways: ASCII or HEX.
+this is determined by the first part (AX). You must put your string inside 
+brackets. If your string contains brackets you must escape it.
+e.g. {abc\{dd\}g}. You also can escape backslashes too. e.g. {dro\\des} is 
+equal to dro\des. Be careful about initial and final spaces between your
+string and the brackets. They are taken into account. e.g. { lily} is equal
+to " lily" not "lily". In ASCII mode everything you put inside the brackets
+(including line breaks) will be taken into account.
+For HEX mode, only hex digits (0-9, a-fA-F) are allowed inside the brackets.
+the number of digits inside the bracket must be even. No other constraints 
+are applied. there could be spaces between digits.
+
+4. The 4th part define the replacement pattern and the explanation is the
+same as 3th part.
+
+NOTE:
+- You can define a pattern in several line
+- Multiple patterns can be defined in one line
+- You can add comment to pattern file using #
+- You can not put comment inside {} or ()
+
+Example Pattern File:
+--------------------
+
+# comments
+a (olive)  {over and over again}
+a  {apple } {orange} # Replace apple with orange
+x (sunflower) {     56 10 23 Ef EB 
+                    1D e9 09 d3 7c a4} {00 00 00 2A} # another replacement
+#
+# comments
+a (violet)  {from \{23\} to  }
+x  {20 b3 7e 0a 40 97 79 ff ac 
+    2d 84 2c 0c 3d 60 8d} # comments
+x(poppy)  {50 55 42 5 1 6 c c c 0 a}
+x (rose)  {00 00 00 fe002345 e3}
+
+
+See more example of pattern files in the test directory.

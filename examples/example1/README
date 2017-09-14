@@ -1,0 +1,20 @@
+Example 1
+---------
+
+Explains how to use the _search function of the ahocorasick library
+
+
+COMPILE
+-------
+
+First you must compile ahocorasick library.
+Then:
+
+$ cd example1
+$ make 
+
+
+RUN
+---
+
+$ build/example1

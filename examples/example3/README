@@ -1,0 +1,20 @@
+Example 3
+---------
+
+Shows how to use ahocorasick library with a C++ wrapper
+
+
+COMPILE
+-------
+
+First you must compile ahocorasick library.
+Then:
+
+$ cd example3
+$ make 
+
+
+RUN
+---
+
+$ build/example3

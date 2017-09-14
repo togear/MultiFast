@@ -1,0 +1,21 @@
+Example 0
+---------
+
+Explains how to use the _settext/_findnext function pair of the ahocorasick 
+library
+
+
+COMPILE
+-------
+
+First you must compile ahocorasick library.
+Then:
+
+$ cd example0
+$ make 
+
+
+RUN
+---
+
+$ build/example0

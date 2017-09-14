@@ -1,0 +1,20 @@
+Example 4
+---------
+
+Just another example that shows how to use Aho-Corasick library
+
+
+COMPILE
+-------
+
+First you must compile ahocorasick library.
+Then:
+
+$ cd example4
+$ make 
+
+
+RUN
+---
+
+$ build/example4
